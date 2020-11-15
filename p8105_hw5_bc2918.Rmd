@@ -10,8 +10,15 @@ library(tidyverse)
 knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE
-    
 )
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
@@ -108,22 +115,54 @@ homicide_df =
 ```
 
 
-## Problem 2 ideas ...
+## Problem 2
 
-import one dataset 
-
-```{r}
-data_1 = read_csv("lda_data/con_01.csv")
-```
-
+Import and tidy the data from each file.
 ```{r, error = TRUE}
-path_df = 
+study_df = 
+  # get file paths
   tibble(
     path = list.files("lda_data"),
-  ) %>% 
+  ) %>%
+  # read each file 
   mutate(
+    subject = str_remove(path, '.csv'),
     path = str_c("lda_data/", path),
-    data = map(.............))
-read_csv(path_df$path[[1]])
+    data = map(.x = path, ~read_csv(.x))
+    ) %>% 
+  # tidy data
+  separate(subject, c("arm", "id"), remove = FALSE) %>% 
+  mutate(
+    arm = recode(arm, con = "control", exp = "experimental"),
+    id = as.integer(id)
+         ) %>%
+  unnest(data) %>% 
+  select(-path)
 ```
+
+Make a spaghetti plot showing observations on each subject over time.
+
+```{r fig.width = 10, fig.height = 6}
+study_df %>% 
+  # transform into long format 
+  pivot_longer(
+    week_1:week_8,
+    names_prefix = "week_",
+    names_to = "week",
+    values_to = "observation"
+  ) %>% 
+  # plot 
+  ggplot(aes(x = week, y = observation, group = interaction(arm, id), color = arm)) +
+  geom_point() + geom_line() +
+  labs(
+    title = "Observations over Time",
+    x = "Week",
+    y = "Observation",
+    color = "Arm"
+  )
+```
+
+It could be observed from the plot that the experimental group subjects generally have higher observations than the control group. There is also an increasing trend in the observations of the experimental group while the observations in the control group are stable across the 8 weeks.
+
+# Problem 3
 
