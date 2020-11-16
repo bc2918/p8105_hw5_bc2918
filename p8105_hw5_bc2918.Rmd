@@ -159,7 +159,7 @@ study_df %>%
   geom_point() + 
   geom_line(alpha = 0.7) +
   labs(
-    title = "Observations over Time",
+    title = "Observations vs. Time",
     x = "Week",
     y = "Observation",
     color = "Arm"
@@ -236,7 +236,7 @@ Check results.
 res %>% unnest(data)
 ```
 
-Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of μ on the x axis.
+Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of μ (the effect size) on the x axis.
 ```{r}
 res %>% 
   ggplot(aes(x = mu, y = rej_prop)) +
@@ -281,4 +281,4 @@ res %>%
   ) 
 ```
 
-It could be observed that the sample average of μ̂  across tests for which the null is rejected `deviates more` from the true value of μ when the true value of μ is actually close to the 0 (which is the value we set in the null hypothesis), and `gets closer` to the true mean when the true mean gets larger and more different from the nul. It makes sense because when the true mean is closer to the null, the cases get rejected are more of extreme samples that deviates from the true mean, while when the true mean is drastically different from the null, most cases will be rejected, the means of which will just approximate the true mean. 
+In this plot, the average estimate of the sample means all nicely approximate the true means. However, it could be observed that the sample average of μ̂  across tests for which the null is rejected `deviates` more from the true value of μ when the true value of μ is actually close to the 0 (which is the value we set in the null hypothesis), and `gets closer` to the true mean when the true mean differs more from the null. It makes sense because when the true mean is closer to the null, the cases get rejected are more of extreme samples that deviates even more from the true mean, while when the true mean is drastically different from the null, most cases will be rejected and the means of these samples will just approximate the true mean. 
